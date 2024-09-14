@@ -1,0 +1,175 @@
+﻿using Microsoft.EntityFrameworkCore;
+using NZWalks.API.Models.Domain;
+
+namespace NZWalks.API.Data
+{
+    public class NZWalksDbContext:DbContext
+    {
+        public NZWalksDbContext(DbContextOptions dbContextOptions):base(dbContextOptions) 
+        {
+                
+        }
+        public DbSet<Difficulty> Difficulties { get; set; }
+        public DbSet<Region> Regions { get; set; }
+        public DbSet<Walk> Walks { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+
+        //    // Seed data for Difficulties
+        //    var difficulties = new List<Difficulty>
+        //    {
+        //        new Difficulty
+        //        {
+        //            Id = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            Name = "Easy"
+        //        },
+        //        new Difficulty
+        //        {
+        //            Id = Guid.Parse("EA294873-7A8C-4C0F-BFA7-A2EB492CBF8C"),
+        //            Name = "Medium"
+        //        },
+        //        new Difficulty
+        //        {
+        //            Id = Guid.Parse("F808DDCD-B5E5-4D80-B732-1CA523E48434"),
+        //            Name = "Hard"
+        //        }
+        //    };
+        //    modelBuilder.Entity<Difficulty>().HasData(difficulties);
+
+        //    // Seed data for Regions
+        //    var regions = new List<Region>
+        //    {
+        //        new Region
+        //        {
+        //            Id = Guid.Parse("CFA06ED2-BF65-4B65-93ED-C9D286DDB0DE"),
+        //            Code = "WLG",
+        //            Name = "Wellington",
+        //            RegionImageUrl = "https://example.com/wellington.jpg"
+        //        },
+        //        new Region
+        //        {
+        //            Id = Guid.Parse("F7248FC3-2585-4EFB-8D1D-1C555F4087F6"),
+        //            Code = "AKL",
+        //            Name = "Auckland",
+        //            RegionImageUrl = "https://example.com/auckland.jpg"
+        //        },
+        //        new Region
+        //        {
+        //            Id = Guid.Parse("906CB139-415A-4BBB-A174-1A1FAF9FB1F6"),
+        //            Code = "NSN",
+        //            Name = "Nelson",
+        //            RegionImageUrl = "https://example.com/nelson.jpg"
+        //        },
+        //        new Region
+        //        {
+        //            Id = Guid.Parse("F077A22E-4248-4BF6-B564-C7CF4E250263"),
+        //            Code = "BLF",
+        //            Name = "Bluff",
+        //            RegionImageUrl = "https://example.com/bluff.jpg"
+        //        }
+        //    };
+        //    modelBuilder.Entity<Region>().HasData(regions);
+
+        //    // Seed data for Walks
+        //    var walks = new List<Walk>
+        //    {
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("327aa9f7-26f7-4ddb-8047-97464374bb63"),
+        //            Name = "Mount Victoria Loop",
+        //            Description = "This scenic walk takes you around the top of Mount Victoria, offering stunning views of Wellington and its harbor.",
+        //            LengthInKm = 3.5,
+        //            WalkImageUrl = "https://images.pexels.com/photos/4350631/pexels-photo-4350631.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            RegionId = Guid.Parse("CFA06ED2-BF65-4B65-93ED-C9D286DDB0DE")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("1cc5f2bc-ff4b-47c0-a475-1add56c6497b"),
+        //            Name = "Makara Beach Walkway",
+        //            Description = "This walk takes you along the wild and rugged coastline of Makara Beach, with breathtaking views of the Tasman Sea.",
+        //            LengthInKm = 8.2,
+        //            WalkImageUrl = "https://images.pexels.com/photos/4350631/pexels-photo-4350631.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("EA294873-7A8C-4C0F-BFA7-A2EB492CBF8C"),
+        //            RegionId = Guid.Parse("CFA06ED2-BF65-4B65-93ED-C9D286DDB0DE")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("09601132-f92d-457c-b47e-da90e117b33c"),
+        //            Name = "Botanic Garden Walk",
+        //            Description = "Explore the beautiful Botanic Garden of Wellington on this leisurely walk, with a wide variety of plants and flowers to admire.",
+        //            LengthInKm = 2.0,
+        //            WalkImageUrl = "https://images.pexels.com/photos/4350631/pexels-photo-4350631.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            RegionId = Guid.Parse("CFA06ED2-BF65-4B65-93ED-C9D286DDB0DE")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("30d654c7-89ac-4704-8333-5065b740150b"),
+        //            Name = "Mount Eden Summit Walk",
+        //            Description = "This walk takes you to the summit of Mount Eden, the highest natural point in Auckland, with panoramic views of the city.",
+        //            LengthInKm = 2.0,
+        //            WalkImageUrl = "https://images.pexels.com/photos/5342974/pexels-photo-5342974.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            RegionId = Guid.Parse("F7248FC3-2585-4EFB-8D1D-1C555F4087F6")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("f7578324-f025-4c86-83a9-37a7f3d8fe81"),
+        //            Name = "Cornwall Park Walk",
+        //            Description = "Explore the beautiful Cornwall Park on this leisurely walk, with a wide variety of trees, gardens, and animals to admire.",
+        //            LengthInKm = 3.0,
+        //            WalkImageUrl = "https://images.pexels.com/photos/5342974/pexels-photo-5342974.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            RegionId = Guid.Parse("F7248FC3-2585-4EFB-8D1D-1C555F4087F6")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("bdf28703-6d0e-4822-ad8b-e2923f4e95a2"),
+        //            Name = "Takapuna to Milford Coastal Walk",
+        //            Description = "This coastal walk takes you along the beautiful beaches of Takapuna and Milford, with stunning views of Rangitoto Island.",
+        //            LengthInKm = 5.0,
+        //            WalkImageUrl = "https://images.pexels.com/photos/5342974/pexels-photo-5342974.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("EA294873-7A8C-4C0F-BFA7-A2EB492CBF8C"),
+        //            RegionId = Guid.Parse("F7248FC3-2585-4EFB-8D1D-1C555F4087F6")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("43132402-3d5e-467a-8cde-351c5c7c5dde"),
+        //            Name = "Centre of New Zealand Walkway",
+        //            Description = "This walk takes you to the geographical centre of New Zealand, with stunning views of Nelson and its surroundings.",
+        //            LengthInKm = 1.0,
+        //            WalkImageUrl = "https://images.pexels.com/photos/808466/pexels-photo-808466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("EA294873-7A8C-4C0F-BFA7-A2EB492CBF8C"),
+        //            RegionId = Guid.Parse("906CB139-415A-4BBB-A174-1A1FAF9FB1F6")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("c020c2d6-9e0a-4426-bf44-8d8315d57b78"),
+        //            Name = "Queen's Gardens Walk",
+        //            Description = "Explore the beautiful Queen's Gardens in Nelson on this leisurely walk, with a wide variety of plants and flowers to admire.",
+        //            LengthInKm = 1.5,
+        //            WalkImageUrl = "https://images.pexels.com/photos/808466/pexels-photo-808466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("54466F17-02AF-48E7-8ED3-5A4A8BFACF6F"),
+        //            RegionId = Guid.Parse("906CB139-415A-4BBB-A174-1A1FAF9FB1F6")
+        //        },
+        //        new Walk
+        //        {
+        //            Id = Guid.Parse("6c1c8890-0db9-4b1c-851d-7bb1c648f72f"),
+        //            Name = "The Bluff Hill Loop",
+        //            Description = "This walk takes you around Bluff Hill, offering stunning views of Bluff and the surrounding areas.",
+        //            LengthInKm = 2.5,
+        //            WalkImageUrl = "https://images.pexels.com/photos/808466/pexels-photo-808466.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //            DifficultyId = Guid.Parse("F808DDCD-B5E5-4D80-B732-1CA523E48434"),
+        //            RegionId = Guid.Parse("F077A22E-4248-4BF6-B564-C7CF4E250263")
+        //        }
+        //    };
+        //    modelBuilder.Entity<Walk>().HasData(walks);
+        //}
+    }
+
+   
+}
