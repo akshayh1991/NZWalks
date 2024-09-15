@@ -5,21 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class WalksController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IWalkRepository _walkRepository;
+        private readonly ILogger _logger;
 
-        public WalksController(IMapper mapper,IWalkRepository walkRepository)
+        public WalksController(IMapper mapper,IWalkRepository walkRepository,ILogger<WalksController> logger)
         {
             _mapper = mapper;
             _walkRepository = walkRepository;
+            _logger = logger;
         }
         [HttpPost]
         public async Task<IActionResult> CreateWalk([FromBody]CreateWalkDto walkDto)
@@ -44,8 +47,10 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllWalks()
         {
+            _logger.LogInformation("Akshay Huded");
             var res1 = await _walkRepository.GetAllWalksAsync();
             var res = _mapper.Map<List<GetWalkDto>>(await _walkRepository.GetAllWalksAsync());
+            _logger.LogInformation($"Get All the data {JsonSerializer.Serialize(res)}");
             return Ok(res);
         }
 
