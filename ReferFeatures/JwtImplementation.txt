@@ -29,6 +29,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 app.UseAuthentication();
 
+appSettings.Json
+=================
+"JWT": {
+    "Key": "osadmlkasdoijiuihmsdoihsiuhaiuhsaihsiudgishiasjdiuohasiduhoashdiuihasdiuh",
+    "Issuer": "https://localhost:7243",
+    "Audience": "https://localhost:7243"
+  }
 
 If Getting 401 ? then try with below things:
 ===============================================

@@ -1,0 +1,18 @@
+﻿
+SQL Database:
+==============
+"ConnectionStrings": {
+    "NZWalksConn": "Server=LAPTOP-L9AURLD3\\SQLEXPRESS;Database=NZWalks;Trusted_Connection=True;TrustServerCertificate=True"
+  },
+
+
+
+  Nuget Package for SQL Cipher:
+  ==============================
+  Microsoft.EntityFrameworkCore.Sqlite
+
+SQL Cipher:
+===========
+ "ConnectionStrings": {
+   "NZWalksConn": "Data Source=NZWAlks.db"
+ }
