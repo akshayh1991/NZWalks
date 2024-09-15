@@ -1,0 +1,53 @@
+
+Step 1 : Write your middle ware code.
+======================================
+
+using System.Net;
+
+namespace NZWalks.API.Middlewares
+{
+    public class ExceptionHandlerMiddleware
+    {
+        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+        private readonly RequestDelegate _requestDelegate;
+
+        public ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger,RequestDelegate requestDelegate)
+        {
+            _logger = logger;
+            _requestDelegate = requestDelegate;
+        }
+
+        public async Task InvokeAsync(HttpContext httpContext)
+        {
+            try
+            {
+                await _requestDelegate(httpContext);
+            }
+            catch (Exception ex)
+            {
+                var errorId=Guid.NewGuid();
+                // Log this exception
+                _logger.LogError(ex,$"{errorId} : {ex.Message}");
+                //custom error response
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.ContentType= "application/json";
+
+
+                var error = new
+                {
+                    Id = errorId,
+                    ErrorMessage = ex.Message
+
+                };
+                await httpContext.Response.WriteAsJsonAsync(error);
+            }
+        }
+    }
+}
+
+
+
+Step 2 :Inject middleware in program.cs file:
+==========================================
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();

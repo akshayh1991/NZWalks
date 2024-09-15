@@ -1,0 +1,48 @@
+
+Nuget:
+=======
+Serilog
+Serilog.AspNetCore
+Serilog.Sinks.Console
+Serilog.Sinks.File
+
+
+Log to Console Window:
+***********************
+Program.cs
+--------------
+
+//*********************************************************Serilog**************************************************************
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .MinimumLevel.Information()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+//******************************************************************************************************************************
+
+controller:
+--------------
+  _logger.LogInformation("Akshay Huded");
+  var res = _mapper.Map<List<GetWalkDto>>(await _walkRepository.GetAllWalksAsync());
+_logger.LogInformation($"Get All the data {JsonSerializer.Serialize(res)}");
+
+
+It logs in the console window
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Log to the Folder
+*******************
+
+//*********************************************************Serilog**************************************************************
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/NZWalks_Log.txt",rollingInterval:RollingInterval.Minute)
+    .MinimumLevel.Information()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+//******************************************************************************************************************************

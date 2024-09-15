@@ -1,0 +1,140 @@
+Nuget:
+============
+
+Microsoft.AspNetCore.Authentication.JwtBearer
+Microsoft.IdentityModel.Tokens
+
+System.IdentityModel.Tokens.Jwt
+Microsoft.IdentityModel.JsonWebTokens
+Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+Preventing Access to controller methods:
+==========================================
+Program.cs
+============
+//*********************************************Activating Authorize Attribute******************************************************
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+    });
+//*******************************************************************************************************************************
+
+app.UseAuthentication();
+
+
+If Getting 401 ? then try with below things:
+===============================================
+Install Nuget : Microsoft.IdentityModel.JsonWebTokens
+
+Instead of using ValidAudience use ValidAudiences
+=============================================================
+//ValidAudience = builder.Configuration["Jwt: Audience"],        
+ValidAudiences = new[] { builder.Configuration["Jwt:Audience"] },   
+
+
+Adding Authorize Button:
+=========================== 
+
+//***************************************Add Authorize Button********************************************************************
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "NZ Walks API", Version = "v1" });
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference=new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                Id=JwtBearerDefaults.AuthenticationScheme
+                },
+                Scheme="Oauth2",
+                Name=JwtBearerDefaults.AuthenticationScheme,
+                In=ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
+
+//*******************************************************************************************************************************
+
+
+
+
+Generating JwtToken Method:
+=============================
+DtoModels:
+==========
+public class JwtDto
+{
+}
+
+public class CreateJwtDto
+{
+    public string Username { get; set; }
+}
+
+public class JwtResponseDto
+{
+    public string Username { get; set; }
+    public string Token { get; set; }
+    
+}
+
+Controller Method:
+=====================
+[HttpPost]
+public async Task<IActionResult> Login(CreateJwtDto createJwtDto)
+{
+    var token=_authRepository.CreateJwtToken(createJwtDto.Username);
+    var response = new JwtResponseDto
+    {
+        Token = token,
+        Username = createJwtDto.Username,
+    };
+    return Ok(response);
+}
+
+
+
+Interface Method:
+=====================
+string CreateJwtToken(string username);
+
+
+
+Repository Method:
+=====================
+public string CreateJwtToken(string username)
+{
+    var claims = new List<Claim>();
+    claims.Add(new Claim(ClaimTypes.UserData, username));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+    var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    var token = new JwtSecurityToken
+        (
+        _configuration["JWT:Issuer"],
+         _configuration["JWT:Audience"],
+         claims,
+         expires: DateTime.Now.AddMinutes(30),
+         signingCredentials: credentials
+        );
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
