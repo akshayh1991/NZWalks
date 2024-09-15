@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Net;
 using System.Text.Json;
 
 namespace NZWalks.API.Controllers
@@ -47,11 +48,12 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllWalks()
         {
-            _logger.LogInformation("Akshay Huded");
-            var res1 = await _walkRepository.GetAllWalksAsync();
-            var res = _mapper.Map<List<GetWalkDto>>(await _walkRepository.GetAllWalksAsync());
-            _logger.LogInformation($"Get All the data {JsonSerializer.Serialize(res)}");
-            return Ok(res);
+                _logger.LogInformation("Akshay Huded");
+                var res1 = await _walkRepository.GetAllWalksAsync();
+                var res = _mapper.Map<List<GetWalkDto>>(await _walkRepository.GetAllWalksAsync());
+                throw new Exception("This is the exception");
+                _logger.LogInformation($"Get All the data {JsonSerializer.Serialize(res)}");
+                return Ok(res);
         }
 
         [HttpGet("{guid}")]
